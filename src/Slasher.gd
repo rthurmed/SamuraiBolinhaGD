@@ -10,7 +10,6 @@ func _ready():
 
 
 func _unhandled_input(event):
-	# FIXME: only active when clicking
 	if event is InputEventMouseMotion:
 		var mouse_event: InputEventMouseMotion = event
 		position = mouse_event.position
@@ -28,8 +27,13 @@ func _physics_process(_delta):
 	if not raycast.is_colliding():
 		return
 	
-	var ball: Node2D = raycast.get_collider()
-	ball.queue_free()
+	var ball: Ball = raycast.get_collider()
+	ball.cut(
+		position + Vector2(-1000, 0).rotated(raycast.rotation),
+		position + Vector2(1000, 0).rotated(raycast.rotation)
+	)
+	# TODO: reenable
+	# ball.queue_free()
 
 
 func set_active(value: bool):

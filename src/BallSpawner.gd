@@ -2,6 +2,14 @@ extends Area2D
 
 
 const Ball = preload("res://src/Ball.tscn")
+const COLORS = [
+	Color("#e14141"),
+	Color("#83e04c"),
+	Color("#fff275"),
+	Color("#6eeeff"),
+	Color("#ff80aa"),
+	Color("#39855a"),
+]
 
 onready var collision = $CollisionShape2D
 
@@ -22,4 +30,5 @@ func _on_Timer_timeout():
 	instance.angular_velocity = rand_range(-10, 10)
 	instance.linear_velocity.x = rand_range(-20, 20)
 	instance.linear_velocity.y = -200
+	instance.modulate = COLORS[rand_range(0, len(COLORS))]
 	add_child(instance)

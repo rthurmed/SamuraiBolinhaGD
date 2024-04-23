@@ -68,6 +68,7 @@ func cut(ball: Ball):
 		node.position = ball.position
 		node.linear_velocity = ball.linear_velocity + pushing_velocity
 		node.angular_velocity = ball.angular_velocity
+		node.modulate = ball.modulate
 		node.flying = true
 		ball.get_parent().add_child(node)
 	

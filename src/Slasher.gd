@@ -1,5 +1,6 @@
 extends Node2D
 
+const BallScene = preload("res://src/Ball.tscn")
 
 onready var raycast = $Raycast
 onready var particles = $Particles
@@ -28,10 +29,7 @@ func _physics_process(_delta):
 		return
 	
 	var ball: Ball = raycast.get_collider()
-	ball.cut(
-		position + Vector2(-1000, 0).rotated(raycast.rotation),
-		position + Vector2(1000, 0).rotated(raycast.rotation)
-	)
+	cut(ball)
 	# TODO: reenable
 	# ball.queue_free()
 
@@ -39,3 +37,38 @@ func _physics_process(_delta):
 func set_active(value: bool):
 	raycast.enabled = value
 	particles.emitting = value
+
+
+func cut(ball: Ball):
+	# cuts the object into 2 other objects and destroys it
+	var from = position + Vector2(-1000, 0).rotated(raycast.rotation)
+	var to = position + Vector2(1000, 0).rotated(raycast.rotation)
+	var normal = raycast.get_collision_normal()
+	
+	var cutter = PoolVector2Array([
+		ball.polygon.to_local(from),
+		ball.polygon.to_local(to),
+		ball.polygon.to_local(to + Vector2.ONE),
+		ball.polygon.to_local(from + Vector2.ONE),
+	])
+	
+	ball.collision.disabled = true
+	
+	var new_polygons = Geometry.clip_polygons_2d(ball.polygon.polygon, cutter)
+	
+	for idx in range(len(new_polygons)):
+		var points = new_polygons[idx]
+		
+		var pushing_force = 12
+		var pushing_angle = normal.rotated(deg2rad(-90 + idx * 180))  # push 2 parts in opposite directions
+		var pushing_velocity = pushing_angle * pushing_force
+		
+		var node = BallScene.instance()
+		node.replace_polygon = points
+		node.position = ball.position
+		node.linear_velocity = ball.linear_velocity + pushing_velocity
+		node.angular_velocity = ball.angular_velocity
+		node.flying = true
+		ball.get_parent().add_child(node)
+	
+	ball.queue_free()

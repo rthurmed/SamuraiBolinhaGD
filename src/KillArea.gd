@@ -2,9 +2,11 @@ extends Area2D
 
 
 func _on_KillArea_body_entered(body: CollisionObject2D):
-	if not body.has_meta("flying"):
-		body.set_meta("flying", true)
+	if not body.is_in_group("ball"):
 		return
 	
-	if body.get_meta("flying"):
-		body.queue_free()
+	var ball: Ball = body
+	if ball.flying:
+		ball.queue_free()
+	else:
+		ball.flying = true

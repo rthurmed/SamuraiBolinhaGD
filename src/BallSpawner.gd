@@ -1,7 +1,8 @@
 extends Area2D
 
 
-const Ball = preload("res://src/Ball.tscn")
+const Ball = preload("res://src/objects/Ball.tscn")
+const WashingMachine = preload("res://src/objects/WashingMachine.tscn")
 const COLORS = [
 	Color("#e14141"),
 	Color("#83e04c"),
@@ -24,11 +25,17 @@ func _ready():
 
 
 func _on_Timer_timeout():
-	var instance = Ball.instance()
+	var instance = null
+	if randf() > .5:
+		instance = WashingMachine.instance()
+	else:
+		instance = Ball.instance()
+	
 	instance.position.x = rand_range(min_position.x, max_position.x)
 	instance.position.y = rand_range(min_position.y, max_position.y)
 	instance.angular_velocity = rand_range(-10, 10)
 	instance.linear_velocity.x = rand_range(-20, 20)
 	instance.linear_velocity.y = -200
 	instance.modulate = COLORS[rand_range(0, len(COLORS))]
+	
 	add_child(instance)

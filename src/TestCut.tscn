@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://assets/samurai.png" type="Texture" id=1]
-[ext_resource path="res://src/Ball.tscn" type="PackedScene" id=2]
+[ext_resource path="res://src/objects/Ball.tscn" type="PackedScene" id=2]
 [ext_resource path="res://src/Slasher.gd" type="Script" id=4]
 
 [sub_resource type="Curve" id=3]

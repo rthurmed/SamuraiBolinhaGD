@@ -1,9 +1,11 @@
 extends Node2D
 
-const BallScene = preload("res://src/Ball.tscn")
+const BallScene = preload("res://src/objects/Ball.tscn")
 
 onready var raycast = $Raycast
 onready var particles = $Particles
+
+var cut_count = 0
 
 
 func _ready():
@@ -28,8 +30,10 @@ func _physics_process(_delta):
 	if not raycast.is_colliding():
 		return
 	
-	var ball: Ball = raycast.get_collider()
-	cut(ball)
+	var cuttable: Cuttable = raycast.get_collider()
+	cut(cuttable)
+	cut_count = cut_count + 1
+	print(cut_count)
 
 
 func set_active(value: bool):
@@ -37,22 +41,20 @@ func set_active(value: bool):
 	particles.emitting = value
 
 
-func cut(ball: Ball):
+func cut(cuttable: Cuttable):
 	# cuts the object into 2 other objects and destroys it
 	var from = position + Vector2(-1000, 0).rotated(rotation)
 	var to = position + Vector2(1000, 0).rotated(rotation)
 	var normal = raycast.get_collision_normal()
 	
 	var cutter = PoolVector2Array([
-		ball.polygon.to_local(from),
-		ball.polygon.to_local(to),
-		ball.polygon.to_local(to + Vector2.ONE),
-		ball.polygon.to_local(from + Vector2.ONE),
+		cuttable.polygon.to_local(from),
+		cuttable.polygon.to_local(to),
+		cuttable.polygon.to_local(to + Vector2.ONE),
+		cuttable.polygon.to_local(from + Vector2.ONE),
 	])
 	
-	ball.collision.disabled = true
-	
-	var new_polygons = Geometry.clip_polygons_2d(ball.polygon.polygon, cutter)
+	var new_polygons = Geometry.clip_polygons_2d(cuttable.polygon.polygon, cutter)
 	
 	for idx in range(len(new_polygons)):
 		var points = new_polygons[idx]
@@ -61,13 +63,13 @@ func cut(ball: Ball):
 		var pushing_angle = normal.rotated(deg2rad(-90 + idx * 180))  # push 2 parts in opposite directions
 		var pushing_velocity = pushing_angle * pushing_force
 		
-		var node = BallScene.instance()
+		var node = cuttable.duplicate()
 		node.replace_polygon = points
-		node.position = ball.position
-		node.linear_velocity = ball.linear_velocity + pushing_velocity
-		node.angular_velocity = ball.angular_velocity
-		node.modulate = ball.modulate
+		node.position = cuttable.position
+		node.linear_velocity = cuttable.linear_velocity + pushing_velocity
+		node.angular_velocity = cuttable.angular_velocity
+		node.modulate = cuttable.modulate
 		node.flying = true
-		ball.get_parent().add_child(node)
+		cuttable.get_parent().add_child(node)
 	
-	ball.queue_free()
+	cuttable.queue_free()

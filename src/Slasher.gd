@@ -61,6 +61,7 @@ func cut(cuttable: Cuttable):
 		
 		var pushing_force = 12
 		var pushing_angle = normal.rotated(deg2rad(-90 + idx * 180))  # push 2 parts in opposite directions
+		
 		var pushing_velocity = pushing_angle * pushing_force
 		
 		var node = cuttable.duplicate()

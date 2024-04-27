@@ -6,23 +6,28 @@ onready var raycast = $Raycast
 onready var particles = $Particles
 
 var cut_count = 0
+var cursor_offset = Vector2.ZERO
+var initial_viewport_rect = Rect2()
 
 
 func _ready():
+	var _ok
+	_ok = get_viewport().connect("size_changed", self, "_on_Viewport_size_changed")
+	initial_viewport_rect = get_viewport_rect()
 	set_active(false)
 
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
 		var mouse_event: InputEventMouseMotion = event
-		position = mouse_event.position
+		global_position = mouse_event.position + cursor_offset
 		rotation = mouse_event.relative.angle()
 		set_active(mouse_event.button_mask == 1)
 	
 	if event is InputEventScreenDrag:
 		# TODO: test if gets touch screen inputs
 		var drag_event: InputEventScreenDrag = event
-		position = drag_event.position
+		global_position = drag_event.position + cursor_offset
 		rotation = drag_event.relative.angle()
 
 
@@ -33,7 +38,7 @@ func _physics_process(_delta):
 	var cuttable: Cuttable = raycast.get_collider()
 	cut(cuttable)
 	cut_count = cut_count + 1
-	print(cut_count)
+	# print(cut_count)
 
 
 func set_active(value: bool):
@@ -74,3 +79,10 @@ func cut(cuttable: Cuttable):
 		cuttable.get_parent().add_child(node)
 	
 	cuttable.queue_free()
+
+
+func _on_Viewport_size_changed():
+	var size = initial_viewport_rect.size
+	var viewport_diff = get_viewport_rect().size / size - Vector2.ONE
+	var viewport_diff_px = viewport_diff * size
+	cursor_offset = viewport_diff_px / 2 * -1

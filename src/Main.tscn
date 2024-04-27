@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://assets/samurai.png" type="Texture" id=1]
 [ext_resource path="res://src/objects/Ball.tscn" type="PackedScene" id=2]
 [ext_resource path="res://src/FlyingArea.gd" type="Script" id=3]
 [ext_resource path="res://src/Slasher.gd" type="Script" id=4]
 [ext_resource path="res://src/BallSpawner.gd" type="Script" id=5]
+[ext_resource path="res://src/Main.gd" type="Script" id=6]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 88, 120 )
@@ -16,6 +17,7 @@ _data = [ Vector2( 0.0247525, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0,
 extents = Vector2( 86, 20 )
 
 [node name="Main" type="Node"]
+script = ExtResource( 6 )
 
 [node name="Sprite" type="Sprite" parent="."]
 position = Vector2( 33, 212 )
@@ -26,13 +28,13 @@ position = Vector2( 88, 120 )
 current = true
 
 [node name="FlyingArea" type="Area2D" parent="Camera2D"]
+visible = false
 script = ExtResource( 3 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Camera2D/FlyingArea"]
 shape = SubResource( 1 )
 
 [node name="Slasher" type="Node2D" parent="."]
-position = Vector2( 88, 96 )
 script = ExtResource( 4 )
 
 [node name="Raycast" type="RayCast2D" parent="Slasher"]

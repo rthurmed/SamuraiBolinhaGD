@@ -12,5 +12,5 @@ export var flying = false
 func _ready():
 	add_to_group("cuttable")
 	if len(replace_polygon) > 0:
-		polygon.polygon = replace_polygon
-		collision.polygon = replace_polygon
+		polygon.set_deferred("polygon", replace_polygon)
+		collision.set_deferred("polygon", replace_polygon)

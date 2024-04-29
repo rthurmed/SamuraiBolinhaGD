@@ -1,11 +1,8 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://assets/samurai.png" type="Texture" id=1]
 [ext_resource path="res://src/objects/Ball.tscn" type="PackedScene" id=2]
-[ext_resource path="res://src/Slasher.gd" type="Script" id=4]
-
-[sub_resource type="Curve" id=3]
-_data = [ Vector2( 0.0247525, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+[ext_resource path="res://src/Slasher.tscn" type="PackedScene" id=3]
 
 [node name="TestCut" type="Node"]
 
@@ -17,28 +14,18 @@ texture = ExtResource( 1 )
 position = Vector2( 88, 120 )
 current = true
 
-[node name="Slasher" type="Node2D" parent="."]
-position = Vector2( 88, 96 )
-script = ExtResource( 4 )
-
-[node name="Raycast" type="RayCast2D" parent="Slasher"]
-position = Vector2( -16, 0 )
-enabled = true
-cast_to = Vector2( 16, 0 )
-collision_mask = 2
-
-[node name="Particles" type="CPUParticles2D" parent="Slasher"]
-amount = 32
-lifetime = 0.5
-local_coords = false
-gravity = Vector2( 0, 0 )
-angle = 45.0
-scale_amount = 4.0
-scale_amount_curve = SubResource( 3 )
+[node name="Slasher" parent="." instance=ExtResource( 3 )]
+debug_line_path = NodePath("../Line2D")
+debug_line = true
 
 [node name="Ball" parent="." instance=ExtResource( 2 )]
 position = Vector2( 88, 120 )
 gravity_scale = 0.0
+
+[node name="Line2D" type="Line2D" parent="."]
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
 
 [node name="BGLayer" type="CanvasLayer" parent="."]
 layer = -5

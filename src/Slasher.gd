@@ -67,6 +67,7 @@ func _draw():
 
 func set_active(value: bool):
 	area.set_deferred("monitoring", value)
+	particles.set_deferred("emitting", value)
 
 
 func split_cuttable(cuttable: Cuttable, cutter: PoolVector2Array, normal: Vector2):
